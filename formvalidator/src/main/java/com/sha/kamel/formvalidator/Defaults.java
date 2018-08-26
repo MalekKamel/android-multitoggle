@@ -63,12 +63,12 @@ public interface Defaults {
 
     default void leftRadius(View v, float radius) {
         if (radius == 0) return;
-        radius(v, new float[] { radius, radius, 8, 8, 0, 0, radius, radius });
+        radius(v, new float[] { radius, radius, 0, 0, 0, 0, radius, radius });
     }
 
     default void rightRadius(View v, float radius) {
         if (radius == 0) return;
-        radius(v, new float[] { 8, 8, radius, radius, radius, radius, 0, 0 });
+        radius(v, new float[] { 0, 0, radius, radius, radius, radius, 0, 0 });
     }
 
     default void setBackground(View v, @ColorInt int res) {

@@ -50,7 +50,7 @@ public abstract class ToggleButton extends LinearLayout
 
     private OnItemSelectedListener listener;
 
-    protected float radius;
+    protected float cornerRadius;
     protected int rootViewBackgroundColor;
     protected boolean isRounded;
     protected boolean scrollable;
@@ -85,14 +85,14 @@ public abstract class ToggleButton extends LinearLayout
             colorPressed = color(a, R.styleable.MultiToggleButton_mtbPressedColor, R.color.blue);
             colorUnpressed = color(a, R.styleable.MultiToggleButton_mtbUnpressedColor, R.color.white_unpressed);
 
-            colorUnpressedText = color(a, R.styleable.MultiToggleButton_mtbColorUnpressedText);
             colorPressedText = color(a, R.styleable.MultiToggleButton_mtbColorPressedText);
+            colorUnpressedText = color(a, R.styleable.MultiToggleButton_mtbColorUnpressedText);
 
             isRounded = a.getBoolean(R.styleable.MultiToggleButton_mtbRoundedCorners, false);
             multipleChoice = a.getBoolean(R.styleable.MultiToggleButton_mtbMultipleChoice, false);
             scrollable = a.getBoolean(R.styleable.MultiToggleButton_mtbScrollable, false);
             selectFirstItem = a.getBoolean(R.styleable.MultiToggleButton_mtbSelectFirstItem, true);
-            radius = a.getDimension(R.styleable.MultiToggleButton_mtbCornerRadius, 0f);
+            cornerRadius = a.getDimension(R.styleable.MultiToggleButton_mtbCornerRadius, 0f);
 
             labels = a.getTextArray(R.styleable.MultiToggleButton_labels);
 
@@ -118,7 +118,7 @@ public abstract class ToggleButton extends LinearLayout
 
             if (isRounded){
                 rootView.setBackgroundResource(R.drawable.root_view_rounded);
-                radius(rootView, radius);
+                radius(rootView, cornerRadius);
             }
             setBackground(rootView, colorUnpressed);
         }
@@ -139,7 +139,7 @@ public abstract class ToggleButton extends LinearLayout
                         inflater,
                         !isRounded ? R.layout.view_left_toggle_button : R.layout.view_left_toggle_button_rounded
                 );
-                if (isRounded) leftRadius(tv, radius);
+                if (isRounded) leftRadius(tv, cornerRadius);
             }
         }
 
@@ -153,7 +153,7 @@ public abstract class ToggleButton extends LinearLayout
                     inflater,
                     !isRounded ? R.layout.view_right_toggle_button : R.layout.view_right_toggle_button_rounded
             );
-            if (isRounded) rightRadius(tv, radius);
+            if (isRounded) rightRadius(tv, cornerRadius);
         }
         else
             tv = inflateTextView(
@@ -248,7 +248,7 @@ public abstract class ToggleButton extends LinearLayout
         TextView item = items.get(position);
         boolean currentState = item.isSelected();
         Stream.of(items)
-                .forEachIndexed((i, v) ->{
+                .forEachIndexed((i, v) -> {
                     // Update selected item only in multiple choice
                     if (multipleChoice) {
                         if (i == position && v != null)
@@ -451,5 +451,7 @@ public abstract class ToggleButton extends LinearLayout
         return this;
     }
 
-
+    public void setCornerRadius(float cornerRadius) {
+        this.cornerRadius = cornerRadius;
+    }
 }

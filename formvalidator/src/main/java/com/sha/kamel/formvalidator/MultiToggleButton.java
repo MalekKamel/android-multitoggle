@@ -22,7 +22,6 @@ public class MultiToggleButton extends ToggleButton {
     }
 
     private void initItems() {
-
         setItems(labels);
     }
 
@@ -65,7 +64,7 @@ public class MultiToggleButton extends ToggleButton {
 
         prepare();
 
-        addItem(itemsCount, labels, imageResourceIds, selected);
+        addItem(itemsCount, labels, imageResourceIds, selection);
         return this;
     }
 

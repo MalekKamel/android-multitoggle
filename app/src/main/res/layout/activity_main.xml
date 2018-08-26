@@ -18,6 +18,7 @@
         mtb:labels="@array/yes_no_array"
         mtb:mtbRoundedCorners="true"
         mtb:rootViewBackgroundColor="@color/mtb_green"
+        mtb:mtbCornerRadius="30dp"
         />
 
     <com.sha.kamel.formvalidator.MultiToggleButton
