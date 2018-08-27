@@ -48,6 +48,6 @@ dependencies {
     implementation deps.rx.java
     implementation deps.java8_reactive_streams
 
-    implementation project(':formvalidator')
+    implementation project(':mtb')
 
 }

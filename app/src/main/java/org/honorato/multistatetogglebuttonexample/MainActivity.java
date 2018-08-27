@@ -6,8 +6,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.sha.kamel.formvalidator.MultiToggleButton;
-import com.sha.kamel.formvalidator.ToggleButton;
+import com.sha.kamel.multitogglebutton.MultiToggleButton;
+import com.sha.kamel.multitogglebutton.ToggleButton;
+
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,17 +48,23 @@ public class MainActivity extends AppCompatActivity {
         MultiToggleButton mtb2 =  this.findViewById(R.id.mtb2);
         MultiToggleButton mtb3 =  this.findViewById(R.id.mtb3);
         MultiToggleButton mtb4 =  this.findViewById(R.id.mtb4);
-        mtb2.multipleChoice(true)
-                .setColorRes(R.color.mtb_green, R.color.mtb_gray);
+        MultiToggleButton mtb5 =  this.findViewById(R.id.mtb5);
 
         mtb1.setOnItemSelectedListener(listener())
-        .setLabel("Yes Yes", 0);
-        mtb2.setOnItemSelectedListener(listener());
+        .setLabel("Yes", 0);
+
+        mtb2.setOnItemSelectedListener(listener())
+                .setLabelsRes(Arrays.asList(R.string.left, R.string.right))
+                .setColorRes(R.color.mtb_green, R.color.mtb_gray);
+
         mtb3.setOnItemSelectedListener(listener());
+        mtb4.setOnItemSelectedListener(listener());
+
+        mtb5.setOnItemSelectedListener(listener());
 
         String[] dogs = getResources().getStringArray(R.array.dogs_array);
 
-        mtb4.setItems(dogs, null, new boolean[dogs.length])
+        mtb5.setItems(dogs, null, new boolean[dogs.length])
                 .setOnItemSelectedListener(listener())
         .setPressedColorTextRes(R.color.white)
         .setUnpressedColorTextRes(R.color.white);
