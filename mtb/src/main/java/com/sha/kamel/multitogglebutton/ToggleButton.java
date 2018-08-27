@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.annimon.stream.Stream;
+import com.annimon.stream.function.IntConsumer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +47,11 @@ public abstract class ToggleButton extends LinearLayout
      */
     protected ViewGroup rootView;
 
+    protected IntConsumer maxCallback;
+    protected int maxItemsToSelect;
+
     public interface OnItemSelectedListener {
-        void onSelected(View item, int value, String label, boolean selected);
+        void onSelected(ToggleButton toggleButton, View item, int value, String label, boolean selected);
     }
 
     private OnItemSelectedListener listener;
@@ -152,6 +156,11 @@ public abstract class ToggleButton extends LinearLayout
         return tv;
     }
 
+    /**
+     * Listen to selection states of items
+     * @param listener called if state changed
+     * @return this
+     */
     public ToggleButton setOnItemSelectedListener(OnItemSelectedListener listener) {
         this.listener = listener;
         return this;
@@ -161,7 +170,9 @@ public abstract class ToggleButton extends LinearLayout
     public Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();
         bundle.putParcelable(KEY_INSTANCE_STATE, super.onSaveInstanceState());
-        bundle.putBooleanArray(KEY_BUTTON_STATES, getSelectionArray());
+        boolean[] selection = getSelectionArray();
+        if (!isEmpty(selection))
+            bundle.putBooleanArray(KEY_BUTTON_STATES, selection);
         return bundle;
     }
 
@@ -169,31 +180,57 @@ public abstract class ToggleButton extends LinearLayout
     public void onRestoreInstanceState(Parcelable state) {
         if (state instanceof Bundle) {
             Bundle bundle = (Bundle) state;
-            setSelectionStates(bundle.getBooleanArray(KEY_BUTTON_STATES));
+            setItemsSelection(bundle.getBooleanArray(KEY_BUTTON_STATES));
             state = bundle.getParcelable(KEY_INSTANCE_STATE);
         }
         super.onRestoreInstanceState(state);
     }
 
+    /**
+     * @return an array of items selection
+     */
     public boolean[] getSelectionArray() {
+        if (isEmpty(items)) return new boolean[]{};
         boolean[] list = new boolean[items.size()];
         for (int i = 0 ; i < items.size() ; i++)
             list[i] = items.get(i).isSelected();
         return list;
     }
 
+    /**
+     * @return list of items selection
+     */
     public List<Boolean> getSelectionList() {
         if (isEmpty(items)) return new ArrayList<>();
         return Stream.of(items).map(View::isSelected).toList();
     }
 
-    public ToggleButton setSelectionStates(boolean[] selected) {
-        if (items == null || selected == null || items.size() != selected.length) return this;
-        Stream.of(items).forEachIndexed((i, v) -> setSelected(v, selected[i]));
+      /**
+     * @return list of items selection
+     */
+    public int getSelectedItemsSize() {
+        return Stream.of(items).filter(View::isSelected).toList().size();
+    }
+
+    /**
+     * Set items selection. selection array must be equal to items
+     * size
+     * @param selected selection array
+     * @return this
+     */
+    public ToggleButton setItemsSelection(boolean[] selected) {
+        if (isEmpty(items) || isEmpty(selected) || items.size() != selected.length) return this;
+        Stream.of(items).forEachIndexed((i, v) -> setItemSelected(v, selected[i]));
         return this;
     }
 
-    public ToggleButton setSelected(View v, boolean selected) {
+    /**
+     * Set an item selected
+     * @param v item view
+     * @param selected true for selected
+     * @return this
+     */
+    public ToggleButton setItemSelected(View v, boolean selected) {
         if (v == null) return this;
 
         v.setSelected(selected);
@@ -217,6 +254,10 @@ public abstract class ToggleButton extends LinearLayout
             tv.setTextColor(!selected ? colorPressed : colorUnpressed);
     }
 
+    /**
+     * @return a {@link Selected} object with zero or
+     * more selected items
+     */
     public Selected getSelected() {
         List<TextView> selected = Stream.of(items)
                 .filterIndexed((i, item) -> item.isSelected())
@@ -224,11 +265,16 @@ public abstract class ToggleButton extends LinearLayout
 
         List<Integer> selectedPositions = Stream.of(items)
                 .filterIndexed((i, item) -> item.isSelected())
-                .mapIndexed((i, item) -> i)
+                .map(items::indexOf)
                 .toList();
-        return new Selected(selected, selectedPositions);
+        return new Selected(selected, selectedPositions, items.size());
     }
 
+    /**
+     * Reverse selection of an item
+     * @param position index of item
+     * @return this
+     */
     public ToggleButton toggleItemSelection(int position) {
         TextView item = items.get(position);
         boolean currentState = item.isSelected();
@@ -237,32 +283,36 @@ public abstract class ToggleButton extends LinearLayout
                     // Update selected item only in multiple choice
                     if (multipleChoice) {
                         if (i == position && v != null)
-                            setSelected(v, !v.isSelected());
+                            setItemSelected(v, !v.isSelected());
                         return;
                     }
                     //
-                    setSelected(items.get(i), i == position);
+                    setItemSelected(items.get(i), i == position);
                 });
 
         String label = item.getText().toString();
 
         if (listener != null && currentState != item.isSelected())
-            listener.onSelected(item, position, label, item.isSelected());
+            listener.onSelected(this, item, position, label, item.isSelected());
 
         return this;
     }
 
-    protected void refresh() {
+    /**
+     * update items
+     */
+    public void refresh() {
         Stream.of(getSelectionList())
-                .forEachIndexed((i, selected) -> setSelected(items.get(i), selected));
+                .forEachIndexed((i, selected) -> setItemSelected(items.get(i), selected));
         setBackground(rootView, colorUnpressed);
     }
 
     /**
      * The desired color resource identifier generated by the aapt tool
      *
-     * @param colorPressed    color resource ID for the pressed createTextView(s)
-     * @param colorUnpressed color resource ID for the released createTextView(s)
+     * @param colorPressed    color resource ID for the pressed item
+     * @param colorUnpressed color resource ID for the released item
+     * @return this
      */
     public ToggleButton setColorRes(@ColorRes int colorPressed, @ColorRes int colorUnpressed) {
         setColors(
@@ -275,8 +325,9 @@ public abstract class ToggleButton extends LinearLayout
     /**
      * Color values are in the form 0xAARRGGBB
      *
-     * @param colorPressed    resolved color for the pressed createTextView(s)
-     * @param colorUnpressed resolved color for the released createTextView(s)
+     * @param colorPressed    resolved color for the pressed item
+     * @param colorUnpressed resolved color for the released item
+     * @return this
      */
     public ToggleButton setColors(@ColorInt int colorPressed, @ColorInt int colorUnpressed) {
         try {
@@ -294,6 +345,7 @@ public abstract class ToggleButton extends LinearLayout
      *
      * @param colorPressedText  color resource ID for the pressed createTextView's text
      * @param colorPressedBackground  color resource ID for the pressed createTextView's background
+     * @return this
      */
     public ToggleButton setPressedColorsRes(@ColorRes int colorPressedText, @ColorRes int colorPressedBackground) {
         setPressedColors(
@@ -303,23 +355,43 @@ public abstract class ToggleButton extends LinearLayout
         return this;
     }
 
+    /**
+     * The desired color resource for pressed color text
+     * @param color resource
+     * @return this
+     */
     public ToggleButton setPressedColorTextRes(@ColorRes int color) {
         this.colorPressedText = color(color);
         return this;
     }
 
-      public ToggleButton setPressedColorText(@ColorInt int color) {
+    /**
+     * The desired color for pressed color text
+     * @param color resource
+     * @return this
+     */
+    public ToggleButton setPressedColorText(@ColorInt int color) {
         this.colorPressedText = color;
-          refresh();
-          return this;
+        refresh();
+        return this;
     }
 
+    /**
+     * The desired color for unpressed color text
+     * @param color resource
+     * @return this
+     */
     public ToggleButton setUnpressedColorTextRes(@ColorRes int color) {
         this.colorUnpressedText = color(color);
         refresh();
         return this;
     }
 
+    /**
+     * The desired color for pressed color text
+     * @param color resource
+     * @return this
+     */
     public ToggleButton setUnpressedColorText(@ColorInt int color) {
         this.colorUnpressedText = color;
         refresh();
@@ -331,6 +403,7 @@ public abstract class ToggleButton extends LinearLayout
      *
      * @param colorPressedText  resolved color for the pressed createTextView's text
      * @param colorPressedBackground  resolved color for the pressed createTextView's background
+     * @return this
      */
     public ToggleButton setPressedColors(@ColorInt int colorPressedText, @ColorInt int colorPressedBackground) {
         this.colorPressedText = colorPressedText;
@@ -344,6 +417,7 @@ public abstract class ToggleButton extends LinearLayout
      *
      * @param colorUnpressedText  color resource ID for the released createTextView's text
      * @param colorUnpressedBackground  color resource ID for the released createTextView's background
+     * @return this
      */
     public ToggleButton setUnpressedColorRes(@ColorRes int colorUnpressedText, @ColorRes int colorUnpressedBackground) {
         setUnpressedColors(
@@ -358,6 +432,7 @@ public abstract class ToggleButton extends LinearLayout
      *
      * @param colorNotPressedText  resolved color for the released createTextView's text
      * @param colorUnpressedBackground  resolved color for the released createTextView's background
+     * @return this
      */
     public ToggleButton setUnpressedColors(@ColorInt int colorNotPressedText, @ColorInt int colorUnpressedBackground) {
         this.colorUnpressedText = colorNotPressedText;
@@ -372,6 +447,7 @@ public abstract class ToggleButton extends LinearLayout
      *
      * @param colorPressedText     drawable resource ID for the pressed createTextView's background
      * @param colorUnpressedText  drawable resource ID for the released createTextView's background
+     * @return this
      */
     public ToggleButton setForegroundColorsRes(@ColorRes int colorPressedText, @ColorRes int colorUnpressedText) {
         setForegroundColors(
@@ -384,8 +460,9 @@ public abstract class ToggleButton extends LinearLayout
     /**
      * Color values are in the form 0xAARRGGBB
      *
-     * @param colorUnpressedText  resolved color for the pressed createTextView's text
+     * @param colorPressedText  resolved color for the pressed createTextView's text
      * @param colorUnpressedText  resolved color for the released createTextView's text
+     * @return this
      */
     public ToggleButton setForegroundColors(@ColorInt int colorPressedText, @ColorInt int colorUnpressedText) {
         this.colorPressedText = colorPressedText;
@@ -398,21 +475,27 @@ public abstract class ToggleButton extends LinearLayout
      * If multiple choice is enabled, the user can select multiple
      * values simultaneously.
      *
-     * @param enable
+     * @param enable true to be multiple selected
+     * @return this
      */
     public ToggleButton multipleChoice(boolean enable) {
         this.multipleChoice = enable;
         return this;
     }
 
-    public ToggleButton selectFirstItem(boolean selectFirstItem) {
-        this.selectFirstItem = selectFirstItem;
+    /**
+     * Select first item. The first item is selected by default
+     * @param selected false to deselect
+     * @return this
+     */
+    public ToggleButton selectFirstItem(boolean selected) {
+        this.selectFirstItem = selected;
 
         if (isEmpty(items)) return this;
 
         List<Boolean> states = getSelectionList();
         states.set(0, true);
-        Stream.of(states).forEachIndexed((i, selected) -> setSelected(items.get(i), selected));
+        Stream.of(states).forEachIndexed((i, s) -> setItemSelected(items.get(i), s));
         return this;
     }
 
@@ -423,23 +506,45 @@ public abstract class ToggleButton extends LinearLayout
         return this.labels;
     }
 
+    /**
+     * Set item label for item by position
+     * @param label text
+     * @param position index of item
+     * @return this
+     */
     public ToggleButton setLabel(CharSequence label, int position){
         TextView item = items.get(position);
         item.setText(label);
         return this;
     }
 
+    /**
+     * Set item label for item by position
+     * @param label text resource
+     * @param position index of item
+     * @return this
+     */
      public ToggleButton setLabel(@StringRes int label, int position){
         TextView item = items.get(position);
         item.setText(label);
         return setLabel(getContext().getString(label), position);
     }
 
+    /**
+     * Set item label for item by position
+     * @param labels texts resources
+     * @return this
+     */
     public ToggleButton setLabelsRes(List<Integer> labels){
         List<String> l = Stream.of(labels).map(label -> getContext().getString(label)).toList();
         return setLabels(l);
     }
 
+    /**
+     * Set item label for item by position
+     * @param labels texts strings
+     * @return this
+     */
     public ToggleButton setLabels(List<String> labels){
         if (isEmpty(items)) return this;
         if (count(labels) != count(items)) throw new IllegalArgumentException("Labels size may not equal to items size.");
@@ -448,19 +553,133 @@ public abstract class ToggleButton extends LinearLayout
         return this;
     }
 
+    /**
+     * Specify the radius of corners
+     * @param cornerRadius radius size
+     */
     public void setCornerRadius(float cornerRadius) {
         this.cornerRadius = cornerRadius;
     }
 
+    /**
+     * @return true if mtbRoundedCorners is set to true
+     * or mtbCornerRadius value is greater than zero
+     */
     public boolean hasRoundedCorners(){
         return cornerRadius != -1 || isRounded;
     }
 
+    /**
+     * Return item by position
+     * @param position index of item
+     * @return item with the specified position
+     */
     public TextView itemAt(int position){
         return items.get(position);
     }
 
+    /**
+     * @return list of all items. If no items, an empty array is returned.
+     * Never return null
+     */
     public List<TextView> items() {
-        return items;
+        return items == null ? new ArrayList<>() : items;
+    }
+
+    /**
+     * Specify maximum number of items to be selected
+     * @param max number of items
+     * @param callbackIfExceeded will be called if the selected items exceeds max
+     * @return this
+     */
+    public ToggleButton maxSelectedItems(int max, IntConsumer callbackIfExceeded){
+        if (max > items.size())
+            throw new IllegalArgumentException("max may not be greater than added items");
+        maxItemsToSelect = max;
+        maxCallback = callbackIfExceeded;
+        multipleChoice = true;
+        return this;
+    }
+
+    /**
+     * @return true if multiple choice enabled
+     */
+    public boolean isMultipleChoice() {
+        return multipleChoice;
+    }
+
+    /**
+     * @return root view of all items
+     */
+    @Override
+    public ViewGroup getRootView() {
+        return rootView;
+    }
+
+    /**
+     * @return max items to select
+     */
+    public int getMaxItemsToSelect() {
+        return maxItemsToSelect;
+    }
+
+    public float getCornerRadius() {
+        return cornerRadius;
+    }
+
+    /**
+     * @return true if rounded cornders
+     */
+    public boolean isRoundedCorners() {
+        return isRounded;
+    }
+
+    /**
+     * @return true if can scroll
+     */
+    public boolean isScrollable() {
+        return scrollable;
+    }
+
+    /**
+     * @return true if first item is selected by default
+     */
+    public boolean isSelectFirstItem() {
+        return selectFirstItem;
+    }
+
+    /**
+     * @return true if all caps enabled
+     */
+    public boolean isTextAllCaps() {
+        return textAllCaps;
+    }
+
+    /**
+     * @return color of pressed item
+     */
+    public int getColorPressed() {
+        return colorPressed;
+    }
+
+    /**
+     * @return color of unpressed item
+     */
+    public int getColorUnpressed() {
+        return colorUnpressed;
+    }
+
+    /**
+     * @return text color of pressed text
+     */
+    public int getColorPressedText() {
+        return colorPressedText;
+    }
+
+    /**
+     * @return text color of unpressed text
+     */
+    public int getColorUnpressedText() {
+        return colorUnpressedText;
     }
 }

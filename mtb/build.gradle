@@ -15,7 +15,7 @@ ext {
     siteUrl = 'https://github.com/ShabanKamell/android-multitoggle'
     gitUrl = 'https://github.com/ShabanKamell/android-multitoggle.git'
 
-    libraryVersion = '1.0.0'
+    libraryVersion = '1.2.0'
 
     developerId = 'shaban'
     developerName = 'shaban kamel'
@@ -81,6 +81,7 @@ dependencies {
 
     implementation deps.support.design
     javadocDeps deps.support.design
+    javadocDeps deps.support.compat
 
     implementation deps.java8_reactive_streams
     javadocDeps deps.java8_reactive_streams
