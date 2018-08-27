@@ -596,6 +596,7 @@ public abstract class ToggleButton extends LinearLayout
     /**
      * Specify the radius of corners
      * @param cornerRadius radius size
+     * @return this
      */
     public ToggleButton setCornerRadius(float cornerRadius) {
         this.cornerRadius = cornerRadius;
