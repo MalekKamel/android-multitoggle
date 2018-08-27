@@ -64,11 +64,12 @@ public class MainActivity extends AppCompatActivity {
 
         mtb2.setOnItemSelectedListener(listener())
                 .setLabelsRes(Arrays.asList(R.string.left, R.string.right))
-                .setColorRes(R.color.mtb_green, R.color.mtb_gray);
+                .setColorRes(R.color.mtb_green, R.color.mtb_gray)
+                .setCornerRadius(40);
 
         mtb3.setOnItemSelectedListener(listener());
         mtb4.setOnItemSelectedListener(listener())
-        .maxSelectedItems(2, max -> toast("Can't select more than " + max + " items."));
+                .maxSelectedItems(2, max -> toast("Can't select more than " + max + " items."));
 
         mtb5.setOnItemSelectedListener(listener());
 
@@ -82,7 +83,13 @@ public class MainActivity extends AppCompatActivity {
 
     private ToggleButton.OnItemSelectedListener listener(){
         return (toggleButton, item, index, label, selected) -> {
-            String msg = "Number " + index + " is " + (selected ? "selected" : "deselected") + ", Label: " + label + ", Selected items" + selectedItemsMsg(toggleButton);
+            String msg = "Number " +
+                    index +
+                    " is " +
+                    (selected ? "selected" : "deselected") +
+                    ", Label: " + label +
+                    ", Selected items: " +
+                    selectedItemsMsg(toggleButton);
             toast(msg);
         };
     }

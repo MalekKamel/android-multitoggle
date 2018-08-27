@@ -80,11 +80,13 @@ public class MultiToggleButton extends ToggleButton {
 
         prepare();
 
-        addItem(itemsCount, labels, imageResourceIds, selection);
+        addItems(itemsCount, labels, imageResourceIds, selection);
+        if (hasRoundedCorners())
+            radius(rootView, cornerRadius);
         return this;
     }
 
-    private void addItem(
+    private void addItems(
             int itemsCount,
             CharSequence[] labels,
             int[] imageResourceIds,
@@ -94,8 +96,6 @@ public class MultiToggleButton extends ToggleButton {
         items = new ArrayList<>(itemsCount);
 
         if (labels == null) return;
-
-        LayoutInflater inflater = layoutInflater();
 
         Stream.of(labels)
                 .forEachIndexed((i, label) -> {

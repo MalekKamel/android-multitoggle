@@ -51,7 +51,6 @@
         mtb:mtbUnpressedColor="@color/orange"
         mtb:mtbColorPressedText="@color/white"
         mtb:mtbColorUnpressedText="@color/white"
-        mtb:mtbCornerRadius="8dp"
         />
 
     <com.sha.kamel.multitogglebutton.MultiToggleButton

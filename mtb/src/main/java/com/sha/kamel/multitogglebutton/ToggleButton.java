@@ -2,6 +2,7 @@ package com.sha.kamel.multitogglebutton;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.ColorInt;
@@ -58,7 +59,7 @@ public abstract class ToggleButton extends LinearLayout
 
     protected float cornerRadius;
     protected int rootViewBackgroundColor;
-    protected boolean isRounded;
+    protected boolean isCornersRounded;
     protected boolean scrollable;
     protected boolean selectFirstItem;
     protected boolean textAllCaps;
@@ -94,7 +95,7 @@ public abstract class ToggleButton extends LinearLayout
             colorPressedText = color(a, R.styleable.MultiToggleButton_mtbColorPressedText);
             colorUnpressedText = color(a, R.styleable.MultiToggleButton_mtbColorUnpressedText);
 
-            isRounded = a.getBoolean(R.styleable.MultiToggleButton_mtbRoundedCorners, false);
+            isCornersRounded = a.getBoolean(R.styleable.MultiToggleButton_mtbRoundedCorners, false);
             multipleChoice = a.getBoolean(R.styleable.MultiToggleButton_mtbMultipleChoice, false);
             scrollable = a.getBoolean(R.styleable.MultiToggleButton_mtbScrollable, false);
             textAllCaps = a.getBoolean(R.styleable.MultiToggleButton_mtbTextAllCaps, true);
@@ -123,12 +124,20 @@ public abstract class ToggleButton extends LinearLayout
             ViewGroup v = (ViewGroup) inflater.inflate(res, this, true);
             rootView = scrollable ? v.findViewById(R.id.rootView) : v;
 
+            rootView.setBackground(new GradientDrawable());
+
             if (hasRoundedCorners()){
-                rootView.setBackgroundResource(R.drawable.root_view_rounded);
                 radius(rootView, cornerRadius);
             }
             setBackground(rootView, colorUnpressed);
         }
+    }
+
+    private enum ItemPosition{
+        LEFT,
+        RIGHT,
+        INNER,
+        SINGLE
     }
 
     protected TextView createTextView(int i, int itemsCount) {
@@ -139,18 +148,25 @@ public abstract class ToggleButton extends LinearLayout
 
         if (i == 0 && itemsCount != 2) {
             if (itemsCount == 1) {
-                if (hasRoundedCorners()) radius(tv, cornerRadius);
+                tv.setTag(ItemPosition.SINGLE);
+                if (hasRoundedCorners())
+                    radius(tv, cornerRadius);
             }
             else {
-                if (hasRoundedCorners()) leftRadius(tv, cornerRadius);
+                tv.setTag(ItemPosition.LEFT);
+                if (hasRoundedCorners())
+                    leftRadius(tv, cornerRadius);
             }
         }
 
         else if (itemsCount == 2) {
-            if (hasRoundedCorners()) radius(tv, cornerRadius);
+            tv.setTag(ItemPosition.INNER);
+            if (hasRoundedCorners())
+                radius(tv, cornerRadius);
         }
-        else if (i == itemsCount - 1) {
-            if (hasRoundedCorners()) rightRadius(tv, cornerRadius);
+        else if (i == itemsCount - 1 && hasRoundedCorners()) {
+            tv.setTag(ItemPosition.RIGHT);
+            rightRadius(tv, cornerRadius);
         }
 
         return tv;
@@ -303,8 +319,33 @@ public abstract class ToggleButton extends LinearLayout
      */
     public void refresh() {
         Stream.of(getSelectionList())
-                .forEachIndexed((i, selected) -> setItemSelected(items.get(i), selected));
-        setBackground(rootView, colorUnpressed);
+                .forEachIndexed((i, selected) -> {
+                    View item = items.get(i);
+                    refreshView(item);
+                    setItemSelected(item, selected);
+                });
+        if (hasRoundedCorners())
+            radius(rootView, cornerRadius);
+    }
+
+    private void refreshView(View item){
+        Object tag = item.getTag();
+        if (!hasRoundedCorners() || !(tag instanceof ItemPosition)) return;
+        ItemPosition position = (ItemPosition) tag;
+        switch (position){
+            case LEFT:
+                leftRadius(item, cornerRadius);
+                break;
+
+            case RIGHT:
+                rightRadius(item, cornerRadius);
+                break;
+
+            case SINGLE:
+            case INNER:
+                radius(item, cornerRadius);
+                break;
+        }
     }
 
     /**
@@ -513,8 +554,7 @@ public abstract class ToggleButton extends LinearLayout
      * @return this
      */
     public ToggleButton setLabel(CharSequence label, int position){
-        TextView item = items.get(position);
-        item.setText(label);
+        items.get(position).setText(label);
         return this;
     }
 
@@ -557,8 +597,10 @@ public abstract class ToggleButton extends LinearLayout
      * Specify the radius of corners
      * @param cornerRadius radius size
      */
-    public void setCornerRadius(float cornerRadius) {
+    public ToggleButton setCornerRadius(float cornerRadius) {
         this.cornerRadius = cornerRadius;
+        refresh();
+        return this;
     }
 
     /**
@@ -566,7 +608,7 @@ public abstract class ToggleButton extends LinearLayout
      * or mtbCornerRadius value is greater than zero
      */
     public boolean hasRoundedCorners(){
-        return cornerRadius != -1 || isRounded;
+        return cornerRadius != -1 || isCornersRounded;
     }
 
     /**
@@ -628,13 +670,6 @@ public abstract class ToggleButton extends LinearLayout
     }
 
     /**
-     * @return true if rounded cornders
-     */
-    public boolean isRoundedCorners() {
-        return isRounded;
-    }
-
-    /**
      * @return true if can scroll
      */
     public boolean isScrollable() {
@@ -681,5 +716,17 @@ public abstract class ToggleButton extends LinearLayout
      */
     public int getColorUnpressedText() {
         return colorUnpressedText;
+    }
+
+    /**
+     * Set set rounded corners radius of 18dp
+     * by passing true. The default is false
+     * @param rounded true if enabled
+     * @return this
+     */
+    public ToggleButton setRoundedCorners(boolean rounded) {
+        isCornersRounded = rounded;
+        refresh();
+        return this;
     }
 }

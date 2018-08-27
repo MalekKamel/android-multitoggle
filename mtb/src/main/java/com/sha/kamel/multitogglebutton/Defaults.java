@@ -48,17 +48,22 @@ public interface Defaults {
         drawable.setColor(color);
     }
 
+    default GradientDrawable gradientDrawable(View v){
+        return v.getBackground() instanceof GradientDrawable ?
+                (GradientDrawable) v.getBackground() :
+                new GradientDrawable();
+    }
+
     default void radius(View v, float radius) {
         if (radius == -1) radius = DEFAULT_CORNER_RADIUS;
-        if (radius == 0) return;
-        GradientDrawable drawable = new GradientDrawable();
+        GradientDrawable drawable = gradientDrawable(v);
         drawable.setStroke(0, Color.TRANSPARENT);
         drawable.setCornerRadius(radius);
         v.setBackground(drawable);
     }
 
     default void radius(View v, float[] radius) {
-        GradientDrawable drawable = new GradientDrawable();
+        GradientDrawable drawable = gradientDrawable(v);
         drawable.setCornerRadii(radius);
         drawable.setStroke(0, Color.TRANSPARENT);
         v.setBackground(drawable);
@@ -66,13 +71,11 @@ public interface Defaults {
 
     default void leftRadius(View v, float radius) {
         if (radius == -1) radius = DEFAULT_CORNER_RADIUS;
-        if (radius == 0) return;
         radius(v, new float[] { radius, radius, 0, 0, 0, 0, radius, radius });
     }
 
     default void rightRadius(View v, float radius) {
         if (radius == -1) radius = DEFAULT_CORNER_RADIUS;
-        if (radius == 0) return;
         radius(v, new float[] { 0, 0, radius, radius, radius, radius, 0, 0 });
     }
 
