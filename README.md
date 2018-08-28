@@ -1,4 +1,5 @@
 
+
 # MultiToggleButton
 ### A simple Android multi toggle button
 
@@ -34,14 +35,7 @@ Add a button to layout:
 ## Listen to item selection
 ```java
  mtb.setOnItemSelectedListener((toggleButton, item, index, label, selected) -> {  
-   String msg = "Number " +  
-            index +   
-            " is " +   
-            (selected ? "selected" : "deselected") +  
-            ", Label: " + label +   
-            ", Selected items: " +  
-            selectedItemsMsg(toggleButton);  
-  toast(msg);  
+  toast(selected ? "selected" : "deselected"));  
 });
 
 private String selectedItemsMsg(ToggleButton toggleButton) {  
@@ -59,6 +53,21 @@ private String selectedItemsMsg(ToggleButton toggleButton) {
     else msg = "No items selected";  
  return msg;  
 }
+```
+## Get selected items
+You can get selected items.
+```java
+Selected selected = toggleButton.getSelected();
+
+boolean isAnySelected = selected.isAnySelected();
+boolean isAllSelected = selected.isAllSelected();
+boolean isSingleItem = selected.isSingleItem();
+
+int singleItemPosition = selected.getSingleItemPosition();
+TextView singleItem = selected.getSingleItem();
+
+List<TextView> selectedItems = selected.getSelectedItems();
+List<Integer> selectedPositions = selected.getSelectedPositions();
 ```
 ## Colors
 You can select any desired color for different states.
