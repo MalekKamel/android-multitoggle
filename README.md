@@ -12,8 +12,11 @@
 dependencies {
     implementation 'com.sha.kamel:multi-toggle-button:1.6.0@aar'
 }
+
+allprojects {
 repositories { 
 maven { url "https://dl.bintray.com/shabankamel/android" } 
+}
 }
 ```
 # Usage
