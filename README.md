@@ -12,8 +12,11 @@
 dependencies {
     implementation 'com.sha.kamel:multi-toggle-button:1.6.0@aar'
 }
-repositories { 
-maven { url "https://dl.bintray.com/shabankamel/android" } 
+
+allprojects {
+ repositories { 
+  maven { url "https://dl.bintray.com/shabankamel/android" } 
+ }
 }
 ```
 # Usage
@@ -40,22 +43,6 @@ Add a button to layout:
  mtb.setOnItemSelectedListener((toggleButton, item, index, label, selected) -> {  
   toast(selected ? "selected" : "deselected"));  
 });
-
-private String selectedItemsMsg(ToggleButton toggleButton) {  
-  Selected selected = toggleButton.getSelected();  
-  String msg;  
- if (selected.isAnySelected()){  
-        if (selected.isSingleItem())  
-            msg = "One item selected: " + selected.getSingleItemPosition();  
- else  msg = Stream.of(selected.getSelectedPositions())  
-                    .map(String::valueOf)  
-                    .reduce((p1, p2) ->  p1 + ", " + p2)  
-                    .get();  
-  
-  }  
-    else msg = "No items selected";  
- return msg;  
-}
 ```
 ## Get selected items
 You can get selected items.
