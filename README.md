@@ -1,13 +1,16 @@
 
 
+
 # MultiToggleButton
 ### A simple Android multi toggle button
+
+![alt text](https://github.com/ShabanKamell/android-multitoggle/blob/master/blob/master/raw/mtb_example.png "Sample App")
 
 # Installation
 [ ![Download](https://api.bintray.com/packages/shabankamel/android/multitogglebutton/images/download.svg) ](https://bintray.com/shabankamel/android/multitogglebutton/_latestVersion)
 ```groovy
 dependencies {
-    implementation 'com.sha.kamel:multitogglebutton:1.5.0@aar'
+    implementation 'com.sha.kamel:multi-toggle-button:1.6.0@aar'
 }
 repositories { 
 maven { url "https://dl.bintray.com/shabankamel/android" } 
@@ -102,8 +105,17 @@ you can set the maximum items allowed to be selected
 ```java
 mtb.maxSelectedItems(2, max -> toast("Can't select more than " + max + " items."));
 ```
-#### Note:
+#### Note
 if you call `maxSelectedItems`, no need to set `multipleChoice(true)`.
+
+## Scroll
+You can scroll `MultiToggleButton` if the views are out of bounds
+```java
+mtb.setScrollable(true);
+```
+#### Note
+The scroll is disabled by default.
+
 
 # Attributes:
 | Attribute name                    | Description                                                   |
