@@ -1,6 +1,5 @@
 package com.sha.kamel.multitogglebutton;
 
-import android.view.View;
 import android.widget.TextView;
 
 import java.util.List;
@@ -8,19 +7,19 @@ import java.util.List;
 public class Selected {
     private List<TextView> items;
     private List<Integer> positions;
-    private int allItemsize;
+    private int allItemsSize;
 
-    Selected(List<TextView> items, List<Integer> positions, int allItemsize) {
+    Selected(List<TextView> items, List<Integer> positions, int allItemsSize) {
         this.items = items;
         this.positions = positions;
-        this.allItemsize = allItemsize;
+        this.allItemsSize = allItemsSize;
     }
 
     public boolean isSingleItem() {
         return items.size() == 1;
     }
 
-    public View getSingleItem() {
+    public TextView getSingleItem() {
         return items.get(0);
     }
 
@@ -41,7 +40,7 @@ public class Selected {
     }
 
     public boolean isAllSelected() {
-        return items.size() == allItemsize;
+        return items.size() == allItemsSize;
     }
 
 }
