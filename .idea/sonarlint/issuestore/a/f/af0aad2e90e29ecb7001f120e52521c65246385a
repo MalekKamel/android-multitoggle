@@ -1,11 +1,11 @@
 
+@squid:S1659""Declare "mtb4" on a separate line.(ôÄßÈ8Ã¨£à×,
+vsquid:S1450"SRemove the "mtb5" field and declare it as a local variable in the relevant methods.(ëžñÇüÿÿÿÿ8Ã¨£à×,
+psquid:S1450"SRemove the "mtb3" field and declare it as a local variable in the relevant methods.(ºÁƒ08Ã¨£à×,
+qsquid:S1450"SRemove the "mtb4" field and declare it as a local variable in the relevant methods.(ôÄßÈ8Ã¨£à×,
+lsquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(²Ú±Ž8Ã¨£à×,
 vsquid:S1450"SRemove the "mtb2" field and declare it as a local variable in the relevant methods.(žˆþÀûÿÿÿÿ8Ã¨£à×,
 ?squid:S1659""Declare "mtb3" on a separate line.(ºÁƒ08Ã¨£à×,
 Esquid:S1659""Declare "mtb2" on a separate line.(žˆþÀûÿÿÿÿ8Ã¨£à×,
-qsquid:S1450"SRemove the "mtb4" field and declare it as a local variable in the relevant methods.(ôÄßÈ8Ã¨£à×,
-@squid:S1659""Declare "mtb4" on a separate line.(ôÄßÈ8Ã¨£à×,
-vsquid:S1450"SRemove the "mtb5" field and declare it as a local variable in the relevant methods.(ëžñÇüÿÿÿÿ8Ã¨£à×,
 vsquid:S1450"SRemove the "mtb1" field and declare it as a local variable in the relevant methods.(‡€×ûÿÿÿÿÿ8Ã¨£à×,
 Esquid:S1659""Declare "mtb5" on a separate line.(ëžñÇüÿÿÿÿ8Ã¨£à×,
-lsquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(²Ú±Ž8Ã¨£à×,
-psquid:S1450"SRemove the "mtb3" field and declare it as a local variable in the relevant methods.(ºÁƒ08Ã¨£à×,
