@@ -10,7 +10,7 @@
 [ ![Download](https://api.bintray.com/packages/shabankamel/android/multitogglebutton/images/download.svg) ](https://bintray.com/shabankamel/android/multitogglebutton/_latestVersion)
 ```groovy
 dependencies {
-    implementation 'com.sha.kamel:multitogglebutton:1.5.0@aar'
+    implementation 'com.sha.kamel:multi-toggle-button:1.5.0@aar'
 }
 repositories { 
 maven { url "https://dl.bintray.com/shabankamel/android" } 
