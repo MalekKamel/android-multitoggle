@@ -14,9 +14,9 @@ dependencies {
 }
 
 allprojects {
-repositories { 
-maven { url "https://dl.bintray.com/shabankamel/android" } 
-}
+ repositories { 
+  maven { url "https://dl.bintray.com/shabankamel/android" } 
+ }
 }
 ```
 # Usage
