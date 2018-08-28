@@ -16,7 +16,7 @@ maven { url "https://dl.bintray.com/shabankamel/android" }
 
 Add a button to layout:
 ```xml
-  <com.sha.kamel.multitogglebutton.MultiToggleButton  
+<com.sha.kamel.multitogglebutton.MultiToggleButton  
   android:id="@+id/mtb"  
   android:layout_width="match_parent"  
   android:layout_height="wrap_content"  
@@ -91,7 +91,7 @@ mtb.multipleChoice(true)
 ## Max items to select
 you can set the maximum items allowed to be selected
 ```java
-.maxSelectedItems(2, max -> toast("Can't select more than " + max + " items."));
+mtb.maxSelectedItems(2, max -> toast("Can't select more than " + max + " items."));
 ```
 #### Note:
 if you call `maxSelectedItems`, no need to set `multipleChoice(true)`.
