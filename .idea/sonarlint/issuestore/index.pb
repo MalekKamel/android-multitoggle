@@ -1,6 +1,4 @@
 
-~
-Napp/src/main/java/org/honorato/multistatetogglebuttonexample/MainActivity.java,a/f/af0aad2e90e29ecb7001f120e52521c65246385a
 R
 "app/src/main/res/values/colors.xml,9/6/969faa2a5d9f5e8390e958d2c07f2cfd54676e6b
 R
@@ -49,3 +47,9 @@ o
 mtb/build.gradle,2/4/24ea072072fe4713e94594013cff406f9d0606b3
 s
 Cmtb/src/main/java/com/sha/kamel/multitogglebutton/ToggleButton.java,e/b/eba70e44718fdfbb9bda0d313016b28c42f7e174
+<
+build.gradle,f/0/f07866736216be0ee2aba49e392191aeae700a35
+n
+>app/src/main/java/com/sha/kamel/togglesample/MainActivity.java,e/b/ebcd3036ba4cd1868c91b2e70a00ed08034014b6
+P
+ app/src/main/AndroidManifest.xml,8/c/8c55c3ccc257e5907959013f99656e4c8ec3903e
