@@ -1,5 +1,6 @@
 
 
+
 # MultiToggleButton
 ### A simple Android multi toggle button
 
@@ -104,8 +105,17 @@ you can set the maximum items allowed to be selected
 ```java
 mtb.maxSelectedItems(2, max -> toast("Can't select more than " + max + " items."));
 ```
-#### Note:
+#### Note
 if you call `maxSelectedItems`, no need to set `multipleChoice(true)`.
+
+## Scroll
+You can scroll `MultiToggleButton` if the views are out of bounds
+```java
+mtb.setScrollable(true);
+```
+#### Note
+The scroll is disabled by default.
+
 
 # Attributes:
 | Attribute name                    | Description                                                   |
