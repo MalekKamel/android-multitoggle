@@ -4,7 +4,7 @@
 # MultiToggleButton
 ### A simple Android multi toggle button
 
-![alt text](https://github.com/ShabanKamell/android-multitoggle/blob/master/blob/master/raw/mtb_example.png "Sample App")
+![alt text](https://github.com/ShabanKamell/android-form-validator/tree/master/blob/master/raw/form_sample.png "Sample App")
 
 # Installation
 [ ![Download](https://api.bintray.com/packages/shabankamel/android/multitogglebutton/images/download.svg) ](https://bintray.com/shabankamel/android/multitogglebutton/_latestVersion)
