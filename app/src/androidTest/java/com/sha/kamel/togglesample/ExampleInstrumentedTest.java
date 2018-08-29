@@ -1,4 +1,4 @@
-package com.sha.kamel.sample;
+package com.sha.kamel.togglesample;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

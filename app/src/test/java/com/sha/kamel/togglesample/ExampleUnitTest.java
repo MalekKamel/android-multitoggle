@@ -1,4 +1,4 @@
-package com.sha.kamel.sample;
+package com.sha.kamel.togglesample;
 
 import org.junit.Test;
 
