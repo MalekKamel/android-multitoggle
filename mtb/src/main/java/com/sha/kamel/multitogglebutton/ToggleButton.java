@@ -52,7 +52,7 @@ public abstract class ToggleButton extends LinearLayout
     protected int maxItemsToSelect;
 
     public interface OnItemSelectedListener {
-        void onSelected(ToggleButton toggleButton, View item, int value, String label, boolean selected);
+        void onSelected(ToggleButton toggleButton, View item, int position, String label, boolean selected);
     }
 
     private OnItemSelectedListener listener;
