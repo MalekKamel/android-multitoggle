@@ -71,7 +71,15 @@ public class MultiToggleButton extends ToggleButton {
      */
     public ToggleButton setItems(@Nullable CharSequence[] labels, @Nullable int[] imageResourceIds, @Nullable boolean[] selected) {
         boolean[] selection = selected == null ? new boolean[count(labels)] : selected;
-        if (selectFirstItem && selection.length > 0) selection[0] = true;
+        if (selectFirstItem && selection.length > 0){
+            selection[0] = true;
+            notifyItemSelected(
+                    items.get(0),
+                    true,
+                    0,
+                    isEmpty(labels) ? items.get(0).getText().toString() : labels[0].toString()
+            );
+        }
 
         this.labels = labels;
         final int itemsCount = Math.max(count(labels), count(imageResourceIds));

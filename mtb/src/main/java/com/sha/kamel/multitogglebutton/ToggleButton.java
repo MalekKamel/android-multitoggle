@@ -308,10 +308,14 @@ public abstract class ToggleButton extends LinearLayout
 
         String label = item.getText().toString();
 
-        if (listener != null && currentState != item.isSelected())
-            listener.onSelected(this, item, position, label, item.isSelected());
+        notifyItemSelected(item, currentState, position, label);
 
         return this;
+    }
+
+    protected void notifyItemSelected(TextView item, boolean oldState, int position, String label) {
+        if (listener != null && oldState != item.isSelected())
+            listener.onSelected(this, item, position, label, item.isSelected());
     }
 
     /**
