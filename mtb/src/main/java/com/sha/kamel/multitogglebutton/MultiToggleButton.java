@@ -1,6 +1,7 @@
 package com.sha.kamel.multitogglebutton;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.annimon.stream.Stream;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MultiToggleButton extends ToggleButton {
 
@@ -42,8 +44,18 @@ public class MultiToggleButton extends ToggleButton {
      * @param labels An array of CharSequences for the items
      * @return this
      */
-    public ToggleButton setItems(@Nullable CharSequence[] labels) {
+    public ToggleButton setItems(@NonNull CharSequence[] labels) {
         return setItems(labels, null, null);
+    }
+
+       /**
+     * Set multiple items with the specified labels
+     *
+     * @param labels An array of CharSequences for the items
+     * @return this
+     */
+    public ToggleButton setItems(@NonNull List<CharSequence> labels) {
+        return setItems(labels.toArray(new CharSequence[0]), null, null);
     }
 
     /**
@@ -71,7 +83,7 @@ public class MultiToggleButton extends ToggleButton {
      */
     public ToggleButton setItems(@Nullable CharSequence[] labels, @Nullable int[] imageResourceIds, @Nullable boolean[] selected) {
         boolean[] selection = selected == null ? new boolean[count(labels)] : selected;
-        if (selectFirstItem && selection.length > 0){
+        if (!isEmpty(items) && selectFirstItem && selection.length > 0){
             selection[0] = true;
             notifyItemSelected(
                     items.get(0),
@@ -131,6 +143,19 @@ public class MultiToggleButton extends ToggleButton {
                 });
     }
 
+    @Override
+    public ToggleButton setLabelsRes(List<Integer> labels) {
+        List<CharSequence> l = Stream.of(labels)
+                .map(label -> getContext().getString(label))
+                .map(item -> (CharSequence) item)
+                .toList();
+        setItems(l);
+        return super .setLabelsRes(labels);
+    }
 
+    @Override
+    public ToggleButton setLabels(List<String> labels) {
 
+        return super.setLabels(labels);
+    }
 }

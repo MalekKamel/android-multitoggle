@@ -15,7 +15,7 @@ ext {
     siteUrl = 'https://github.com/ShabanKamell/android-multitoggle'
     gitUrl = 'https://github.com/ShabanKamell/android-multitoggle.git'
 
-    libraryVersion = '1.8.0'
+    libraryVersion = '1.8.2'
 
     developerId = 'shaban'
     developerName = 'shaban kamel'
