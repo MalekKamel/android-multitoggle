@@ -1,2 +1,3 @@
 
-csquid:UselessImportCheck"8Remove this unused import 'android.view.LayoutInflater'.(À¯ÑÇ8†ü×ç×,
+Lsquid:S1185"(Remove this method to simply inherit it.(Á”ƒĞùÿÿÿÿ8æÄ¡ŠÚ,
+csquid:UselessImportCheck"8Remove this unused import 'android.view.LayoutInflater'.(À¯ÑÇ8†ü×ç×,
